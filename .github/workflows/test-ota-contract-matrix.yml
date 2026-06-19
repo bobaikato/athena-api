@@ -9,7 +9,7 @@ on:
       ota_git_rev:
         description: Ota git revision to install for this matrix run
         required: false
-        default: 06feb573cfeeda4f8fe4cef6e6768fdbf7ba0ca7
+        default: 756b2b982e42de1b09a76a6d53c59962a94c2a30
   pull_request:
     paths:
       - "ota.yaml"
@@ -28,7 +28,7 @@ permissions:
 
 env:
   OTA_NO_UPDATE_CHECK: "1"
-  OTA_GIT_REV: ${{ github.event.inputs.ota_git_rev || '06feb573cfeeda4f8fe4cef6e6768fdbf7ba0ca7' }}
+  OTA_GIT_REV: ${{ github.event.inputs.ota_git_rev || '756b2b982e42de1b09a76a6d53c59962a94c2a30' }}
   CARGO_NET_GIT_FETCH_WITH_CLI: "true"
 
 jobs:
