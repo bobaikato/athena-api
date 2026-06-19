@@ -5,7 +5,7 @@ project:
   type: application
 metadata:
   ota:
-    minimum_version: "1.6.20"
+    minimum_version: "1.6.21"
 execution:
   default_context: host
   contexts:
@@ -508,6 +508,12 @@ agent:
     - config/queue.yml
     - config/puma.rb
     - ota.yaml
+  bootstrap:
+    ota:
+      note: Install ota when missing so contributors and agents can run the readiness workflows declared in this contract.
+      source:
+        kind: git_rev
+        rev: 3e8dc4efdd90b42c9b33a198b3385074a79a6d66
   notes: |
     This contract intentionally scopes Athena API to the repo-visible Rails API surfaces:
     Bundler setup, PostgreSQL-backed development, CI-style lint/security/test checks, Solid Queue worker startup,
