@@ -218,8 +218,10 @@ tasks:
       This maps to the GitHub Actions lint job and uses the repo binstub.
     category: test
     command:
-      exe: bin/rubocop
+      exe: bundle
       args:
+        - exec
+        - rubocop
         - -f
         - github
     execution:
@@ -245,8 +247,10 @@ tasks:
       This maps to the GitHub Actions security scan using the repository ignore config.
     category: test
     command:
-      exe: bin/brakeman
+      exe: bundle
       args:
+        - exec
+        - brakeman
         - --no-pager
         - --ignore-config
         - config/brakeman.ignore
@@ -268,7 +272,10 @@ tasks:
       This maps to the GitHub Actions vulnerable-gem scan.
     category: test
     command:
-      exe: bin/bundler-audit
+      exe: bundle
+      args:
+        - exec
+        - bundler-audit
     execution:
       default_mode: native
       modes:
