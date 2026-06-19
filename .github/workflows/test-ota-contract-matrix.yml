@@ -335,17 +335,30 @@ jobs:
         shell: bash
         run: ota validate .
 
-      - name: Doctor static verify workflow (container)
-        shell: bash
-        run: ota doctor --mode container --workflow verify-static .
-
       - name: Dry-run container install
         shell: bash
         run: ota run install --mode container --dry-run .
 
+      - name: Execute container install
+        timeout-minutes: 90
+        shell: bash
+        run: ota run install --mode container --stream .
+
+      - name: Doctor static verify workflow (container)
+        shell: bash
+        run: ota doctor --mode container --workflow verify-static .
+
       - name: Dry-run container lint
         shell: bash
         run: ota run lint --mode container --dry-run .
+
+      - name: Dry-run container security scan
+        shell: bash
+        run: ota run security:brakeman --mode container --dry-run .
+
+      - name: Dry-run container audit
+        shell: bash
+        run: ota run security:audit --mode container --dry-run .
 
       - name: Execute container lint
         timeout-minutes: 60
