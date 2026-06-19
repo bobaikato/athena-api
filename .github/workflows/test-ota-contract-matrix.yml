@@ -9,7 +9,7 @@ on:
       ota_git_rev:
         description: Ota git revision to install for this matrix run
         required: false
-        default: 3e8dc4efdd90b42c9b33a198b3385074a79a6d66
+        default: 35d1a02677026a25b91679d563aff694b5dd60f0
   pull_request:
     paths:
       - "ota.yaml"
@@ -28,7 +28,7 @@ permissions:
 
 env:
   OTA_NO_UPDATE_CHECK: "1"
-  OTA_GIT_REV: ${{ github.event.inputs.ota_git_rev || '3e8dc4efdd90b42c9b33a198b3385074a79a6d66' }}
+  OTA_GIT_REV: ${{ github.event.inputs.ota_git_rev || '35d1a02677026a25b91679d563aff694b5dd60f0' }}
   CARGO_NET_GIT_FETCH_WITH_CLI: "true"
 
 jobs:
@@ -55,6 +55,16 @@ jobs:
       - name: Install native prerequisite packages
         shell: bash
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential libpq-dev pkg-config
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.11
+          bundler-cache: false
+
+      - name: Install Bundler
+        shell: bash
+        run: gem install bundler -v 2.5.3
 
       - name: Install ota (Unix)
         if: runner.os != 'Windows'
@@ -185,6 +195,16 @@ jobs:
           createuser -s postgres || true
           psql postgres -c "ALTER USER postgres WITH PASSWORD 'ci-postgres-password';"
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.11
+          bundler-cache: false
+
+      - name: Install Bundler
+        shell: bash
+        run: gem install bundler -v 2.5.3
+
       - name: Install ota (Unix)
         if: runner.os != 'Windows'
         shell: bash
@@ -230,8 +250,8 @@ jobs:
           path: |
             .ota/proof
 
-  native-windows:
-    name: Ota Contract Matrix (windows-static)
+  windows-contract:
+    name: Ota Contract Matrix (windows-contract)
     runs-on: windows-latest
     timeout-minutes: 180
 
@@ -261,26 +281,28 @@ jobs:
         shell: powershell
         run: ota validate .
 
-      - name: Doctor static verify workflow
+      - name: List task surfaces
         shell: powershell
-        run: ota doctor --workflow verify-static .
+        run: |
+          ota tasks --use .
+          ota tasks --safe --use .
+          ota tasks --unsafe --use .
 
-      - name: Dry-run static verify workflow
+      - name: List workflows
         shell: powershell
-        run: ota up --workflow verify-static --native --dry-run .
+        run: ota workflows .
 
-      - name: Execute static verify workflow
-        timeout-minutes: 90
+      - name: Export execution topology
         shell: powershell
-        run: ota up --workflow verify-static --native --stream .
+        run: ota execution topology --json . | Out-File -FilePath ota-execution-topology.json -Encoding utf8
 
       - name: Upload artifacts on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ota-contract-matrix-windows-static
+          name: ota-contract-matrix-windows-contract
           path: |
-            .ota/proof
+            ota-execution-topology.json
 
   container-ubuntu:
     name: Ota Contract Matrix (ubuntu-container)

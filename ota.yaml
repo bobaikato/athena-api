@@ -14,7 +14,6 @@ execution:
       only_on:
         - linux
         - macos
-        - windows
     ruby-host:
       extends: host
     app:
@@ -410,7 +409,13 @@ tasks:
       The Dockerfile is documented as production-oriented, not a local development container path.
       This task proves image build planning without claiming compose or devcontainer support.
     category: build
-    run: docker build -t athena-api:ota .
+    command:
+      exe: docker
+      args:
+        - build
+        - -t
+        - athena-api:ota
+        - .
     requirements:
       tools:
         docker: "*"
@@ -513,13 +518,13 @@ agent:
       note: Install ota when missing so contributors and agents can run the readiness workflows declared in this contract.
       source:
         kind: git_rev
-        rev: 3e8dc4efdd90b42c9b33a198b3385074a79a6d66
+        rev: 35d1a02677026a25b91679d563aff694b5dd60f0
   notes: |
     This contract intentionally scopes Athena API to the repo-visible Rails API surfaces:
     Bundler setup, PostgreSQL-backed development, CI-style lint/security/test checks, Solid Queue worker startup,
     and the documented production Docker image build.
-    This pressure branch depends on Ota `1.6.20` contract surfaces, so keep the matrix pinned to
-    released `1.6.20` or newer instead of falling back to source-install proof.
+    This pressure branch tracks active Ota source-install proof, so keep the matrix pinned to the
+    current Ota git revision instead of a stale released binary.
     Use `ota tasks --safe --use` before running agent work to see the approved safe task surface.
     Use `ota run verify:static` after normal code changes; it is the default agent verification path.
     Use `ota run verify` when you intentionally want the full PostgreSQL-backed CI-style validation path.
