@@ -315,6 +315,8 @@ tasks:
       toolchains:
         - ruby
     effects:
+      network: true
+      network_kind: integration_test
       writes:
         - log
         - tmp
