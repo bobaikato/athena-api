@@ -269,13 +269,11 @@ tasks:
     context: ruby-host
     description: Run Bundler Audit against the locked gem set
     notes: |
-      This maps to the GitHub Actions vulnerable-gem scan.
+      This maps to the GitHub Actions vulnerable-gem scan and uses the repo wrapper so
+      the audit config stays contract-owned instead of bypassed by a raw gem entrypoint.
     category: test
     command:
-      exe: bundle
-      args:
-        - exec
-        - bundler-audit
+      exe: bin/bundler-audit
     execution:
       default_mode: native
       modes:
